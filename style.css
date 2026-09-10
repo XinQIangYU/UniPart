@@ -59,12 +59,13 @@ h1.title {
 .authors {
   text-align: center;
   margin: 0 0 8px;
-  line-height: 1.9;
+  line-height: 1.85;
 }
 
 .authors .author-line {
   display: block;
   text-align: center;
+  white-space: nowrap;
 }
 
 .authors a { font-weight: 600; }
@@ -258,7 +259,8 @@ footer {
 
 @media (max-width: 760px) {
   .grid, .stats { grid-template-columns: 1fr 1fr; }
-  .authors, .affils { text-align: left; }
+  .authors, .affils { text-align: center; }
+  .authors .author-line { white-space: normal; }
 }
 
 @media (max-width: 520px) {
