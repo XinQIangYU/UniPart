@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>UniPart: Towards Zero-shot Language-Grounded 3D Part Segmentation for Embodied Interaction</title>
+  <meta name="description" content="UniPart is a feed-forward cross-modal 3D Transformer for zero-shot, language-grounded 3D part segmentation. ECCV 2026.">
+  <meta property="og:title" content="UniPart (ECCV 2026)">
+  <meta property="og:description" content="Zero-shot language-grounded 3D part segmentation for embodied interaction.">
+  <meta property="og:image" content="assets/unipart_thumb.jpg">
+  <link rel="icon" href="assets/unipart_thumb.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700&family=Source+Serif+4:opsz,wght@8..60,560;8..60,650&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main class="wrap">
+    <header style="text-align:center;">
+      <div class="badge">ECCV 2026</div>
+      <h1 class="title">UniPart</h1>
+      <p class="subtitle">Towards Zero-shot Language-Grounded 3D Part Segmentation for Embodied Interaction</p>
+      <p class="authors">
+        <a href="https://xinqiangyu.github.io">Xinqiang Yu</a><sup>1,4,6,*</sup>,
+        <a href="https://qizekun.github.io">Zekun Qi</a><sup>3,4,*</sup>,
+        <a href="https://jiaweihe.com">Jiawei He</a><sup>6</sup>,
+        Wenyao Zhang<sup>5</sup>,
+        Xuchuan Chen<sup>3,4</sup>,
+        Guocai Yao<sup>6</sup>,
+        <a href="https://ericyi.github.io">Li Yi</a><sup>3,&dagger;</sup>,
+        <a href="https://zhaoxiangzhang.net">Zhaoxiang Zhang</a><sup>1,&dagger;</sup>,
+        <a href="https://hughw19.github.io">He Wang</a><sup>2,4,&dagger;</sup>
+      </p>
+      <p class="equal">* equal contribution &nbsp;&nbsp; &dagger; corresponding authors</p>
+      <p class="affils">
+        <sup>1</sup> NLPR, Institute of Automation, Chinese Academy of Sciences &nbsp;
+        <sup>2</sup> Peking University<br>
+        <sup>3</sup> Tsinghua University &nbsp;
+        <sup>4</sup> Galbot &nbsp;
+        <sup>5</sup> Shanghai Jiao Tong University &nbsp;
+        <sup>6</sup> Beijing Academy of Artificial Intelligence
+      </p>
+      <div class="links">
+        <a class="btn soon" href="#">Paper</a>
+        <a class="btn" href="https://github.com/XinQIangYU/UniPart">Code</a>
+        <a class="btn soon" href="#">Dataset</a>
+        <a class="btn" href="#bibtex">BibTeX</a>
+      </div>
+    </header>
+
+    <img class="teaser" src="assets/teaser.jpg" alt="UniPart overview: LangPart-1M data engine, UniPart model, and language-conditioned real-world part grasping">
+    <p class="caption">
+      UniPart maps a free-form phrase to a functional 3D part mask. We scale supervision with LangPart-1M (160K+ Objaverse assets, 8M text–part pairs) and use the predicted masks for language-conditioned grasping.
+    </p>
+
+    <section>
+      <h2>Abstract</h2>
+      <div class="abstract">
+        Fine-grained robotic manipulation depends on understanding parts, not only whole objects. Existing 3D foundation models tend to be either generalized but object-aware, or part-aware but limited to closed-set taxonomies, which weakens zero-shot transfer. We study text-conditioned 3D part segmentation, where a free-form phrase selects a functional part on a point cloud. We introduce UniPart, a feed-forward cross-modal 3D Transformer that conditions on a CLIP text embedding. To scale supervision, we build LangPart-1M with 160K+ Objaverse assets and 8M text-to-part pairs using multi-view consistent part generation. We further manually label a high-quality subset, LangPart-4K, for fine-tuning and evaluation. UniPart achieves strong zero-shot results on open-vocabulary part benchmarks and transfers to language-conditioned part grasping in the real world.
+        <div class="kws"><b>Keywords:</b> Zero-Shot &middot; 3D Part Segmentation &middot; Embodied Interaction</div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Highlights</h2>
+      <div class="stats">
+        <div class="stat"><b>160K+</b><span>3D objects</span></div>
+        <div class="stat"><b>8M</b><span>text–part pairs</span></div>
+        <div class="stat"><b>0.4s</b><span>feed-forward inference</span></div>
+        <div class="stat"><b>90.5%</b><span>real-world part accuracy</span></div>
+      </div>
+      <div class="grid">
+        <div class="card">
+          <h3>LangPart-1M and LangPart-1K</h3>
+          <p>A large-scale dataset with 160K objects and 8M text-to-part pairs, plus a 1K-object open-vocabulary benchmark with more than 4K annotations.</p>
+        </div>
+        <div class="card">
+          <h3>Scalable data engine</h3>
+          <p>Multi-view rendering, SAM proposals, Set-of-Mark prompting, and text-guided merging lift 2D parts into consistent 3D masks. LangPart-4K is verified by ten annotators.</p>
+        </div>
+        <div class="card">
+          <h3>A simple cross-modal Transformer</h3>
+          <p>UniPart injects a frozen CLIP text embedding into every layer by addition, keeping the model lightweight while remaining strongly language-conditioned.</p>
+        </div>
+        <div class="card">
+          <h3>Embodied validation</h3>
+          <p>On real sensor point clouds, UniPart produces part masks that can be passed to GraspNet and DexGraspNet 2.0 for language-conditioned grasping.</p>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Method</h2>
+      <p>
+        Existing 3D models often fall into two patterns that leave a gap for dexterous manipulation: promptable but coarse instance separation, or part-aware but closed-set taxonomies. UniPart treats language-grounded part segmentation as the missing interface: take a natural language instruction and return the corresponding 3D part mask.
+      </p>
+      <figure>
+        <img src="assets/data_pipeline.jpg" alt="LangPart-1M annotation pipeline">
+        <figcaption>
+          LangPart-1M generation: query a part list, segment twelve rendered views with SAM and Set-of-Mark, merge regions with text guidance, then lift aligned masks to the point cloud.
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="assets/model.jpg" alt="UniPart three-stage training">
+        <figcaption>
+          Three-stage curriculum. Stage 1 aligns point features with CLIP image patches. Stages 2–3 pretrain on LangPart-1M and fine-tune on manually verified LangPart-4K, injecting CLIP text embeddings layer-wise.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Dataset and Qualitative Results</h2>
+      <figure>
+        <img src="assets/qualitative.jpg" alt="LangPart qualitative examples and dataset scale">
+        <figcaption>
+          Open-vocabulary part examples from LangPart, compared with FIND3D in object and part scale. The dataset covers both single-view and complete object point clouds.
+        </figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Results</h2>
+      <p>Zero-shot mIoU on Objaverse-General, following the FIND3D protocol with two prompt formats.</p>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th rowspan="2">Method</th>
+              <th colspan="2">Seen categories</th>
+              <th colspan="2">Unseen categories</th>
+            </tr>
+            <tr>
+              <th>{part} of a {object}</th>
+              <th>{part}</th>
+              <th>{part} of a {object}</th>
+              <th>{part}</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>PointCLIPV2</td><td>9.81</td><td>11.27</td><td>10.27</td><td>11.09</td></tr>
+            <tr><td>PartSLIP++</td><td>2.69</td><td>15.03</td><td>0.57</td><td>10.43</td></tr>
+            <tr><td>OpenMask3D</td><td>11.81</td><td>11.93</td><td>7.01</td><td>10.31</td></tr>
+            <tr><td>FIND3D</td><td>33.78</td><td>34.10</td><td>26.21</td><td>27.41</td></tr>
+            <tr class="ours"><td>UniPart (ours)</td><td class="best">46.43</td><td class="best">49.27</td><td class="best">41.46</td><td class="best">45.23</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">UniPart is also best on ShapeNetPart, PartNet-E, and our LangPart-1K split. A controlled study shows both the dataset and the architecture contribute: FIND3D on LangPart-1M reaches 38.42 mIoU, while UniPart on LangPart-1M reaches <b>47.25</b>.</p>
+    </section>
+
+    <section>
+      <h2>Real-World Part Grasping</h2>
+      <p>
+        We run language-conditioned grasping on a Franka Panda with a gripper and a UR arm with a Shadow Hand. A single RealSense D415 provides the observation. UniPart predicts the target part, which is then passed to GraspNet or DexGraspNet 2.0.
+      </p>
+      <figure>
+        <img src="assets/realworld.jpg" alt="Real-world Franka and UR Shadow Hand setup">
+        <figcaption>Real-world setup. On 20 objects, UniPart reaches 90.5% part segmentation accuracy and 85.0% grasp success on the intended part.</figcaption>
+      </figure>
+    </section>
+
+    <section id="bibtex">
+      <h2>BibTeX</h2>
+      <pre>@inproceedings{yu2026unipart,
+  title     = {UniPart: Towards Zero-shot Language-Grounded 3D Part Segmentation
+               for Embodied Interaction},
+  author    = {Xinqiang Yu and Zekun Qi and Jiawei He and Wenyao Zhang and
+               Xuchuan Chen and Guocai Yao and Li Yi and Zhaoxiang Zhang and He Wang},
+  booktitle = {European Conference on Computer Vision (ECCV)},
+  year      = {2026}
+}</pre>
+    </section>
+
+    <footer>
+      Template inspired by academic project pages from the authors' previous work.
+      Last updated September 2026.
+    </footer>
+  </main>
+</body>
+</html>
