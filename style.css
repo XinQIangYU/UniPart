@@ -62,6 +62,11 @@ h1.title {
   line-height: 1.9;
 }
 
+.authors .author-line {
+  display: block;
+  text-align: center;
+}
+
 .authors a { font-weight: 600; }
 .equal, .corr { color: var(--muted); font-size: 14px; }
 
